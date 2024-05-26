@@ -97,7 +97,8 @@ docker-compose down
 ### Starting Jenkins
 
 ```sh
-docker-compose up -d --build
+docker-compose build --no-cache
+docker-compose up -d
 ```
 
 ### Viewing Logs
