@@ -1,5 +1,5 @@
-job('example-job') {
-    description('An example job created with Job DSL')
+job('example-job-1') {
+    description('An example job 1 created with Job DSL')
     scm {
         git('https://github.com/example/repo.git')
     }
@@ -7,6 +7,6 @@ job('example-job') {
         scm('H/5 * * * *')
     }
     steps {
-        shell('echo "Hello, World!"')
+        shell('echo "Hello, World! from Job 1"')
     }
 }
