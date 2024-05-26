@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  jenkins:
+  jenkins-master:
     build: .
-    container_name: jenkins_on_docker
+    container_name: jenkins_master
     networks:
       - jenkins
     restart: unless-stopped
@@ -12,6 +12,45 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
+
+  jenkins-slave1:
+    image: jenkins/inbound-agent
+    container_name: jenkins_slave1
+    networks:
+      - jenkins
+    environment:
+      - JENKINS_URL=http://jenkins_master:8080
+      - JENKINS_AGENT_NAME=slave1
+      - JENKINS_SECRET=dbd0ab6fd0c60d94ad7b7284aa2bfcf4295bf931fb21c1111b377b7b4b7a567d
+      - JENKINS_TUNNEL=jenkins_master:50000
+    depends_on:
+      - jenkins-master
+
+  jenkins-slave2:
+    image: jenkins/inbound-agent
+    container_name: jenkins_slave2
+    networks:
+      - jenkins
+    environment:
+      - JENKINS_URL=http://jenkins_master:8080
+      - JENKINS_AGENT_NAME=slave2
+      - JENKINS_SECRET=951bce2b74bd70f4f251b27f4a01230b4dfc2ac14f92c5eecb42facfa8aaff1b
+      - JENKINS_TUNNEL=jenkins_master:50000
+    depends_on:
+      - jenkins-master
+
+  jenkins-slave3:
+    image: jenkins/inbound-agent
+    container_name: jenkins_slave3
+    networks:
+      - jenkins
+    environment:
+      - JENKINS_URL=http://jenkins_master:8080
+      - JENKINS_AGENT_NAME=slave3
+      - JENKINS_SECRET=aa2ad90c7e1041906f1a62688930a48167572f480c97ae5984ad046ee53d96ea
+      - JENKINS_TUNNEL=jenkins_master:50000
+    depends_on:
+      - jenkins-master
 
 networks:
   jenkins:
