@@ -16,13 +16,11 @@ USER jenkins
 # Copy custom groovy scripts to initialize Jenkins
 COPY init.groovy.d /usr/share/jenkins/ref/init.groovy.d/
 
-# Install Jenkins plugins
-RUN jenkins-plugin-cli --plugins \
-    blueocean \
-    workflow-aggregator \
-    git \
-    configuration-as-code \
-    job-dsl
+# Copy the plugins.txt file
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+
+# Install plugins from plugins.txt
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 
 # Set environment variables (optional)
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
