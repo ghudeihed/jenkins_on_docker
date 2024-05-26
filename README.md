@@ -1,15 +1,13 @@
-# Jenkins on Docker
+# Jenkins on Docker with Master and Slave Nodes
 
-This project sets up Jenkins on Docker using a custom Docker image with predefined plugins and configurations. You can choose to set up Jenkins using a bash script or Docker Compose.
+This project sets up a Jenkins master node and three slave nodes using Docker and Docker Compose.
 
 ## Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/) (if using Docker Compose)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-## Setup Options
-
-### Option 1: Using a Bash Script
+## Setup Instructions
 
 1. **Clone the repository**:
 
@@ -18,39 +16,35 @@ This project sets up Jenkins on Docker using a custom Docker image with predefin
     cd jenkins_on_docker
     ```
 
-2. **Make the script executable**:
+2. **Generate Agent Secrets**:
+
+    - Start Jenkins master using Docker Compose.
+    - Access Jenkins at `http://localhost:8080`.
+    - Go to **Manage Jenkins > Manage Nodes and Clouds > Nodes > [Node Name] > Log** to find the secret for each agent.
+    - Update the `docker-compose.yml` file with the generated secrets.
+
+3. **Build and start the containers**:
 
     ```sh
-    chmod +x setup_jenkins.sh
+    docker-compose up -d --build
     ```
 
-3. **Run the script**:
+4. **Access Jenkins**:
+
+    Open a web browser and navigate to `http://localhost:8080`.
+
+5. **Retrieve the initial admin password**:
 
     ```sh
-    ./setup_jenkins.sh
-    ```
-
-### Option 2: Using Docker Compose
-
-1. **Clone the repository**:
-
-    ```sh
-    git clone https://github.com/ghudeihed/jenkins_on_docker
-    cd jenkins_on_docker
-    ```
-
-2. **Run Docker Compose**:
-
-    ```sh
-    docker-compose up -d
+    docker logs jenkins_master
     ```
 
 ## Files and Directories
 
-- `Dockerfile`: Defines the custom Jenkins image.
-- `docker-compose.yml`: Docker Compose configuration file.
-- `setup_jenkins.sh`: Bash script to set up Jenkins using Docker.
+- `Dockerfile`: Defines the custom Jenkins image for the master node.
+- `docker-compose.yml`: Docker Compose configuration file for the master and slave nodes.
 - `init.groovy.d`: Directory containing Groovy scripts for Jenkins initialization.
+- `README.md`: Project documentation.
 
 ## Customization
 
@@ -92,32 +86,27 @@ instance.setSystemMessage("Welcome to your custom Jenkins instance!")
 instance.save()
 ```
 
-## Accessing Jenkins
-
-After starting Jenkins, open a web browser and navigate to `http://localhost:8080`. The initial admin password can be found in the Docker container logs:
-
-```sh
-docker logs jenkins_on_docker
-```
-
 ## Managing Jenkins
 
 ### Stopping Jenkins
 
 ```sh
-docker stop jenkins_on_docker
+docker-compose down
 ```
 
 ### Starting Jenkins
 
 ```sh
-docker start jenkins_on_docker
+docker-compose up -d --build
 ```
 
 ### Viewing Logs
 
 ```sh
-docker logs -f jenkins_on_docker
+docker logs jenkins_master
+docker logs jenkins_slave1
+docker logs jenkins_slave2
+docker logs jenkins_slave3
 ```
 
 ## Contributing
