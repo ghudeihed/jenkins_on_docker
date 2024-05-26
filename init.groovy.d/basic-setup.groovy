@@ -2,6 +2,7 @@ import jenkins.model.*
 import hudson.model.*
 import hudson.slaves.*
 import jenkins.slaves.*
+import hudson.slaves.EnvironmentVariablesNodeProperty.Entry
 
 println "--> Configuring Jenkins with custom setup"
 
