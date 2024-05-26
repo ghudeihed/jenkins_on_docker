@@ -3,14 +3,14 @@
 # Stop all running containers
 docker-compose down
 
-# Remove all containers
-docker-compose rm -f
+# # Remove all containers
+# docker-compose rm -f
 
-# Remove all images related to the project
-docker rmi $(docker images -a -q)
+# # Remove all images related to the project
+# docker rmi $(docker images -a -q)
 
-# Remove all dangling images, volumes, networks, and build cache
-docker system prune -f --volumes
+# # Remove all dangling images, volumes, networks, and build cache
+# docker system prune -f --volumes
 
 # Build without cache
 docker-compose build --no-cache

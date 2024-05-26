@@ -1,118 +1,87 @@
-# Jenkins on Docker with Master and Slave Nodes
+# Jenkins on Docker
 
-This project sets up a Jenkins master node and three slave nodes using Docker and Docker Compose.
+This project sets up a Jenkins master and multiple Jenkins agents (slaves) using Docker and Docker Compose. It dynamically creates jobs based on Job DSL scripts provided in the `jobs` directory.
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+- Docker
+- Docker Compose
+
+## Directory Structure
+
+```
+jenkins_on_docker/
+├── cleanup_rebuild.sh
+├── docker-compose.yml
+├── Dockerfile
+├── Dockerfile.agent
+├── init.groovy.d/
+│   ├── node-setup.groovy
+│   └── job-setup.groovy
+├── jobs/
+│   ├── seedJob1.groovy
+│   ├── seedJob2.groovy
+│   └── seedJob3.groovy
+├── plugins.txt
+├── README.md
+```
 
 ## Setup Instructions
 
-1. **Clone the repository**:
+### 1. Build and Run Jenkins with Docker Compose
 
-    ```sh
-    git clone https://github.com/ghudeihed/jenkins_on_docker
-    cd jenkins_on_docker
-    ```
+1. Run the cleanup and rebuild script to ensure a clean setup:
 
-2. **Generate Agent Secrets**:
+   ```sh
+   ./cleanup_rebuild.sh
+   ```
 
-    - Start Jenkins master using Docker Compose.
-    - Access Jenkins at `http://localhost:8080`.
-    - Go to **Manage Jenkins > Manage Nodes and Clouds > Nodes > [Node Name] > Log** to find the secret for each agent.
-    - Update the `docker-compose.yml` file with the generated secrets.
+2. Verify that Jenkins is up and running by accessing it at `http://localhost:8080`.
 
-3. **Build and start the containers**:
+### 2. Job Setup
 
-    ```sh
-    docker-compose up -d --build
-    ```
+Jobs are defined using Job DSL scripts located in the `jobs` directory. The `job-setup.groovy` script dynamically creates these jobs every time Jenkins starts.
 
-4. **Access Jenkins**:
+### 3. Node Setup
 
-    Open a web browser and navigate to `http://localhost:8080`.
+Jenkins agents (slaves) are defined in the `node-setup.groovy` script. The script adds nodes to the Jenkins master during startup.
 
-5. **Retrieve the initial admin password**:
+### 4. Adding or Updating Jobs
 
-    ```sh
-    docker logs jenkins_master
-    ```
+To add or update jobs, place the corresponding Job DSL scripts in the `jobs` directory. The jobs will be recreated the next time Jenkins starts.
 
-## Files and Directories
+### Important Files
 
-- `Dockerfile`: Defines the custom Jenkins image for the master node.
-- `docker-compose.yml`: Docker Compose configuration file for the master and slave nodes.
-- `init.groovy.d`: Directory containing Groovy scripts for Jenkins initialization.
-- `README.md`: Project documentation.
+- **Dockerfile**: Defines the Jenkins master image.
+- **Dockerfile.agent**: Defines the Jenkins agent image.
+- **docker-compose.yml**: Docker Compose configuration for setting up the Jenkins master and agents.
+- **init.groovy.d/node-setup.groovy**: Groovy script for setting up Jenkins agents.
+- **init.groovy.d/job-setup.groovy**: Groovy script for setting up jobs based on DSL scripts.
+- **cleanup_rebuild.sh**: Script to clean up and rebuild the Docker environment.
 
-## Customization
+### Example Job DSL Scripts
 
-### Adding Plugins
-
-To add more plugins, modify the `Dockerfile`:
-
-```Dockerfile
-RUN jenkins-plugin-cli --plugins \
-    blueocean \
-    workflow-aggregator \
-    git \
-    configuration-as-code \
-    job-dsl \
-    <additional-plugins>
-```
-
-### Initial Configuration
-
-Add your Groovy scripts to the `init.groovy.d` directory to customize Jenkins on startup.
-
-Example (`init.groovy.d/basic-setup.groovy`):
-
+**jobs/seedJob1.groovy**:
 ```groovy
-import jenkins.model.*
-import hudson.model.*
-
-println "--> Configuring Jenkins with custom setup"
-
-def instance = Jenkins.getInstance()
-
-// Set the number of executors
-instance.setNumExecutors(2)
-
-// Configure the system message
-instance.setSystemMessage("Welcome to your custom Jenkins instance!")
-
-// Save the state
-instance.save()
+job('example-job-1') {
+    description('An example job 1 created with Job DSL')
+    scm {
+        git('https://github.com/example/repo.git')
+    }
+    triggers {
+        scm('H/5 * * * *')
+    }
+    steps {
+        shell('echo "Hello, World! from Job 1"')
+    }
+}
 ```
 
-## Managing Jenkins
+## Troubleshooting
 
-### Stopping Jenkins
-
-```sh
-docker-compose down
-```
-
-### Starting Jenkins
-
-```sh
-docker-compose build --no-cache
-docker-compose up -d
-```
-
-### Viewing Logs
-
-```sh
-docker logs jenkins_master
-docker logs jenkins_slave1
-docker logs jenkins_slave2
-docker logs jenkins_slave3
-```
-
-## Contributing
-
-Feel free to submit issues or pull requests if you have suggestions or improvements.
+- **Job Creation Issues**: Ensure the `job-setup.groovy` script is correctly scanning and processing the `jobs` directory.
+- **Node Setup Issues**: Verify that the `node-setup.groovy` script correctly references `Node.Mode.NORMAL` and that the agent secrets are correctly configured.
+- **Docker Cache Issues**: Use the `--no-cache` option with Docker Compose to ensure a clean build.
 
 ## License
 
