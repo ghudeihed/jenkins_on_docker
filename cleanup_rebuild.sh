@@ -7,7 +7,10 @@ docker-compose down
 docker-compose rm -f
 
 # Remove all images related to the project
-docker images -q | xargs docker rmi -f
+docker rmi $(docker images -a -q)
+
+# Remove all dangling images, volumes, networks, and build cache
+docker system prune -f --volumes
 
 # Build without cache
 docker-compose build --no-cache
