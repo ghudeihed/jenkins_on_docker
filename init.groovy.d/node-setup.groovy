@@ -1,23 +1,11 @@
 import jenkins.model.*
-import hudson.model.*
 import hudson.slaves.*
-import jenkins.slaves.*
-import hudson.slaves.EnvironmentVariablesNodeProperty.Entry
 
-println "--> Configuring Jenkins with custom setup"
+// Add slave nodes
+println "--> Adding slave nodes"
 
 def instance = Jenkins.getInstance()
 
-// Set the number of executors
-instance.setNumExecutors(2)
-
-// Configure the system message
-instance.setSystemMessage("Welcome to your custom Jenkins instance!")
-
-// Save the state
-instance.save()
-
-// Add slave nodes
 def nodes = [
     [name: 'slave1', description: 'Slave Node 1', remoteFS: '/home/jenkins', numExecutors: 1],
     [name: 'slave2', description: 'Slave Node 2', remoteFS: '/home/jenkins', numExecutors: 1],
@@ -45,3 +33,5 @@ nodes.each { node ->
         e.printStackTrace()
     }
 }
+
+println "--> Node setup completed"
