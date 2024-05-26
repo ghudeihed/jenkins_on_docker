@@ -14,7 +14,9 @@ services:
       - jenkins_home:/var/jenkins_home
 
   jenkins-slave1:
-    image: jenkins/inbound-agent
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
     container_name: jenkins_slave1
     networks:
       - jenkins
@@ -27,7 +29,9 @@ services:
       - jenkins-master
 
   jenkins-slave2:
-    image: jenkins/inbound-agent
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
     container_name: jenkins_slave2
     networks:
       - jenkins
@@ -40,7 +44,9 @@ services:
       - jenkins-master
 
   jenkins-slave3:
-    image: jenkins/inbound-agent
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
     container_name: jenkins_slave3
     networks:
       - jenkins

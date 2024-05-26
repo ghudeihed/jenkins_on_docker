@@ -1,0 +1,17 @@
+# Use the official Jenkins agent base image
+FROM jenkins/inbound-agent:latest
+
+# Switch to the root user to install additional software
+USER root
+
+# Install any additional packages you need
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Switch back to the Jenkins user
+USER jenkins
+
+# Define a default command to start the agent
+CMD ["jenkins-agent"]
