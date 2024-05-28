@@ -23,7 +23,7 @@ services:
     environment:
       - JENKINS_URL=http://jenkins_master:8080
       - JENKINS_AGENT_NAME=slave1
-      - JENKINS_SECRET=dbd0ab6fd0c60d94ad7b7284aa2bfcf4295bf931fb21c1111b377b7b4b7a567d
+      - JENKINS_SECRET=<Node-Secret>
       - JENKINS_TUNNEL=jenkins_master:50000
     depends_on:
       - jenkins-master
@@ -38,7 +38,7 @@ services:
     environment:
       - JENKINS_URL=http://jenkins_master:8080
       - JENKINS_AGENT_NAME=slave2
-      - JENKINS_SECRET=951bce2b74bd70f4f251b27f4a01230b4dfc2ac14f92c5eecb42facfa8aaff1b
+      - JENKINS_SECRET=<Node-Secret>
       - JENKINS_TUNNEL=jenkins_master:50000
     depends_on:
       - jenkins-master
@@ -53,7 +53,7 @@ services:
     environment:
       - JENKINS_URL=http://jenkins_master:8080
       - JENKINS_AGENT_NAME=slave3
-      - JENKINS_SECRET=aa2ad90c7e1041906f1a62688930a48167572f480c97ae5984ad046ee53d96ea
+      - JENKINS_SECRET=<Node-Secret>
       - JENKINS_TUNNEL=jenkins_master:50000
     depends_on:
       - jenkins-master
